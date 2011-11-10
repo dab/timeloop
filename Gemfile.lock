@@ -1,0 +1,16 @@
+GIT
+  remote: git://github.com/wycats/rack-offline.git
+  revision: 77d114026deb3fd6d2351e9f058474ffbe6df17b
+  specs:
+    rack-offline (0.6.1)
+
+GEM
+  specs:
+    rack (1.3.5)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rack
+  rack-offline!
