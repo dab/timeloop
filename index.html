@@ -12,43 +12,52 @@
     <script type="text/javascript" src="assets/date.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
+          // If the user was offline, and goes online, ask
+          // the server for updates
+          $(window).bind("online", remoteUpdate);
+          // If the user is online, ask for updates now
+          if(window.navigator.onLine) remoteUpdate();
+          function remoteUpdate() {
+            alert("Updated!");
+          }
           showPreviousTasks();
           $('#flush-storage').click( function() {
             $.jStorage.flush();
-console.log('All records flushed!');
-          });
+            console.log('All records flushed!');
+            });
           if (findCurrentTask()) {
-          $('#task-start').hide();
-          formatRunningTaskTitle(findCurrentTask());
+            $('#task-start').hide();
+            formatRunningTaskTitle(findCurrentTask());
           } else { 
-          $('#task-stop').hide();
+            $('#task-stop').hide();
           }
 
           if ($.jStorage.storageAvailable()) {
 
-          $('#task-start').click( function() {
-            $(this).hide();
-            $('#task-stop').show();
-            rightNow = new Date.now();
-            formatRunningTaskTitle(rightNow);
-            $.jStorage.set(rightNow.toISOString(), '');
-            }); 
-          $('#task-stop').click(function() {
-            $(this).hide();
-            $('#task-start').show();
-            rightNow = new Date.now();
-            $('#pageTitle').html('No current task');
-            $.jStorage.set(findCurrentTask(), rightNow.toISOString());
-            var li = $('.tasks li');
-            li.fadeOut('fast', function() { li.remove(); });
-            showPreviousTasks();
-            });
+            $('#task-start').click( function() {
+                $(this).hide();
+                $('#task-stop').show();
+                rightNow = new Date.now();
+                formatRunningTaskTitle(rightNow);
+                $.jStorage.set(rightNow.toISOString(), '');
+                }); 
+            $('#task-stop').click(function() {
+                $(this).hide();
+                $('#task-start').show();
+                rightNow = new Date.now();
+                $('#pageTitle').html('No current task');
+                $.jStorage.set(findCurrentTask(), rightNow.toISOString());
+                var li = $('.tasks li');
+                li.fadeOut('fast', function() { li.remove(); });
+                showPreviousTasks();
+                remoteUpdate();
+                });
           }
           function findCurrentTask() {
             var currentTask = false;
             index = $.jStorage.index();
             $.each(index, function(n, startTime) {
-startingDate = Date.parse(startTime);
+                startingDate = Date.parse(startTime);
                 console.log(startTime, startingDate);
 
                 endTime = $.jStorage.get(startTime);
@@ -75,12 +84,12 @@ startingDate = Date.parse(startTime);
                 $(".tasks").append('<li><strong>Start:</strong> ' + startTime.toString('HH:mm') + '. <strong>End:</strong> ' + endTime + '.</li>');
                 }
                 });
-$('ul').listview('refresh');
+            $('ul').listview('refresh');
           }
-        
+
       });
 
-</script>
+    </script>
 </head> 
 
 <body> 
