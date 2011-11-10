@@ -1,0 +1,116 @@
+<!DOCTYPE html> 
+<html> 
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <title>Time Loops</title> 
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0b3/jquery.mobile-1.0b3.min.css" />
+    <script src="http://code.jquery.com/jquery-1.6.3.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.0b3/jquery.mobile-1.0b3.min.js"></script>
+    <script type="text/javascript" src="http://github.com/andris9/jStorage/raw/master/jstorage.js"></script>
+    <script type="text/javascript" src="date.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+          showPreviousTasks();
+          $('#flush-storage').click( function() {
+            $.jStorage.flush();
+console.log('All records flushed!');
+          });
+          if (findCurrentTask()) {
+          $('#task-start').hide();
+          formatRunningTaskTitle(findCurrentTask());
+          } else { 
+          $('#task-stop').hide();
+          }
+
+          if ($.jStorage.storageAvailable()) {
+
+          $('#task-start').click( function() {
+            $(this).hide();
+            $('#task-stop').show();
+            rightNow = new Date.now();
+            formatRunningTaskTitle(rightNow);
+            $.jStorage.set(rightNow.toISOString(), '');
+            }); 
+          $('#task-stop').click(function() {
+            $(this).hide();
+            $('#task-start').show();
+            rightNow = new Date.now();
+            $('#pageTitle').html('No current task');
+            $.jStorage.set(findCurrentTask(), rightNow.toISOString());
+            var li = $('.tasks li');
+            li.fadeOut('fast', function() { li.remove(); });
+            showPreviousTasks();
+            });
+          }
+          function findCurrentTask() {
+            var currentTask = false;
+            index = $.jStorage.index();
+            $.each(index, function(n, startTime) {
+startingDate = Date.parse(startTime);
+                console.log(startTime, startingDate);
+
+                endTime = $.jStorage.get(startTime);
+                if (endTime == '') {
+                currentTask = startTime;
+                return false;
+                }
+                });
+            return currentTask;
+          }
+
+          function formatRunningTaskTitle(timeStamp) {
+            currentTime = timeStamp.toString('HH:mm'); 
+
+            $('#pageTitle').html( 'Task running from <strong>' + currentTime + '</strong>.');
+          }
+          function showPreviousTasks() {
+            index = $.jStorage.index();
+            $.each(index, function(n, startTime) {
+
+                endTime = $.jStorage.get(startTime);
+                if (endTime != '') {
+                console.log(startTime);
+                $(".tasks").append('<li><strong>Start:</strong> ' + startTime.toString('HH:mm') + '. <strong>End:</strong> ' + endTime + '.</li>');
+                }
+                });
+$('ul').listview('refresh');
+          }
+        
+      });
+
+</script>
+</head> 
+
+<body> 
+
+  <!-- Start of first page: #one -->
+  <div data-role="page" id="foo">
+
+    <p><img src="logo.png"></p>
+
+    <div data-role="content" id="one">  
+      <h2 id="pageTitle">No current task</h2>
+
+      <a href="#" id="task-start" class="" data-role="button" data-icon="arrow-r"  data-inline="true" >Start task</a>
+      <a href="#" id="task-stop" class="hidden" data-role="button" data-icon="check"  data-inline="true" >Stop task</a>
+      <p>Previous tasks:</p>  
+      <ul class="tasks" data-role="listview" data-inset="true">
+      </ul>
+
+    </div><!-- /content -->
+    <div data-role="footer" class="ui-bar">
+      <select name="select-choice-0"  class="ui-btn-right" id="select-choice-1">
+        <option value="en">English</option>
+        <option value="ru">Russian</option>
+        <option value="fin">Finland</option>
+      </select>
+    <a href="#" id="flush-storage" data-role="button" data-icon="delete">Clear records</a>
+    <a href="#" id="flush-storage" data-role="button" data-icon="refresh">Submit records</a>
+    </div>
+
+  </div><!-- /page one -->
+
+</body>
+</html>
