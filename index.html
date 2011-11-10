@@ -1,5 +1,5 @@
 <!DOCTYPE html> 
-<html> 
+<html  manifest="timeloop.appcache"> 
 
   <head>
     <meta charset="utf-8">
@@ -88,9 +88,16 @@ $('ul').listview('refresh');
   <!-- Start of first page: #one -->
   <div data-role="page" id="foo">
 
+    <div data-role="header" class="ui-bar">
+      <select name="select-choice-0"  class="ui-btn-right" id="select-choice-1">
+        <option value="en">English</option>
+        <option value="ru">Russian</option>
+        <option value="fin">Finland</option>
+      </select>
+    </div>
+    <div data-role="content" id="one">  
     <p><img src="logo.png"></p>
 
-    <div data-role="content" id="one">  
       <h2 id="pageTitle">No current task</h2>
 
       <a href="#" id="task-start" class="" data-role="button" data-icon="arrow-r"  data-inline="true" >Start task</a>
@@ -101,11 +108,6 @@ $('ul').listview('refresh');
 
     </div><!-- /content -->
     <div data-role="footer" class="ui-bar">
-      <select name="select-choice-0"  class="ui-btn-right" id="select-choice-1">
-        <option value="en">English</option>
-        <option value="ru">Russian</option>
-        <option value="fin">Finland</option>
-      </select>
     <a href="#" id="flush-storage" data-role="button" data-icon="delete">Clear records</a>
     <a href="#" id="flush-storage" data-role="button" data-icon="refresh">Submit records</a>
     </div>
